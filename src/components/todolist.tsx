@@ -170,11 +170,16 @@ export default function TodoList() {
           {filteredTasks.map((task) => {
             const timeLeft = calculateTimeRemaining(task.deadline);
             const isExpired = timeLeft === 'Waktu habis!';
-            const taskColor = task.completed
-              ? 'border-green-300 bg-green-50'
-              : isExpired
-              ? 'border-red-300 bg-red-50'
-              : 'border-yellow-300 bg-yellow-50';
+
+            // Warna latar dinamis
+            let taskColor = '';
+            if (isExpired) {
+              taskColor = 'border-red-300 bg-red-50';
+            } else if (task.completed) {
+              taskColor = 'border-green-300 bg-green-50';
+            } else {
+              taskColor = 'border-yellow-300 bg-yellow-50';
+            }
 
             return (
               <motion.li
