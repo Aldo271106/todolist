@@ -12,7 +12,6 @@ import {
 } from 'firebase/firestore';
 import { db } from '../app/lib/firebase';
 
-
 type Task = {
   id: string;
   text: string;
@@ -93,6 +92,34 @@ export default function TodoList() {
     }
   };
 
+  const editTask = async (task: Task): Promise<void> => {
+    const { value: formValues } = await Swal.fire({
+      title: 'Edit tugas',
+      html:
+        `<input id="swal-input1" class="swal2-input" value="${task.text}" placeholder="Nama tugas">` +
+        `<input id="swal-input2" type="datetime-local" class="swal2-input" value="${new Date(task.deadline).toISOString().slice(0, 16)}">`,
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: 'Simpan',
+      cancelButtonText: 'Batal',
+      preConfirm: () => {
+        return [
+          (document.getElementById('swal-input1') as HTMLInputElement)?.value,
+          (document.getElementById('swal-input2') as HTMLInputElement)?.value,
+        ];
+      },
+    });
+
+    if (formValues && formValues[0] && formValues[1]) {
+      const updatedTask = { ...task, text: formValues[0], deadline: formValues[1] };
+      await updateDoc(doc(db, 'tasks', task.id), {
+        text: updatedTask.text,
+        deadline: updatedTask.deadline,
+      });
+      setTasks(tasks.map((t) => (t.id === task.id ? updatedTask : t)));
+    }
+  };
+
   const toggleTask = async (id: string): Promise<void> => {
     const updatedTasks = tasks.map((task) =>
       task.id === id ? { ...task, completed: !task.completed } : task
@@ -151,12 +178,20 @@ export default function TodoList() {
                   >
                     {task.text}
                   </span>
-                  <button
-                    onClick={() => deleteTask(task.id)}
-                    className="text-white p-1 rounded bg-red-600 hover:bg-red-800"
-                  >
-                    Hapus
-                  </button>
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => editTask(task)}
+                      className="text-white p-1 rounded bg-blue-500 hover:bg-blue-700 mr-2"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deleteTask(task.id)}
+                      className="text-white p-1 rounded bg-red-600 hover:bg-red-800"
+                    >
+                      Hapus
+                    </button>
+                  </div>
                 </div>
                 <p className="text-sm text-gray-700">
                   Deadline: {new Date(task.deadline).toLocaleString()}
