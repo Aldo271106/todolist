@@ -140,39 +140,43 @@ export default function TodoList() {
   );
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-4 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl text-emerald-500 font-bold mb-4">To-Do List</h1>
+    <div className="max-w-md mx-auto mt-10 p-4 bg-white shadow-lg rounded-xl">
+      <h1 className="text-3xl font-bold text-emerald-600 mb-6 text-center">
+        📝 To-Do List
+      </h1>
 
       {/* Search Input */}
       <div className="mb-4">
         <input
           type="text"
-          placeholder="Cari tugas..."
+          placeholder="🔍 Cari tugas..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full p-2 border rounded-md"
+          className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-400"
         />
       </div>
 
-      <div className="flex justify-center mb-4">
+      {/* Add Button */}
+      <div className="flex justify-center mb-6">
         <button
           onClick={addTask}
-          className="bg-slate-500 text-white px-4 py-2 rounded"
+          className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200"
         >
-          Tambah Tugas
+          ➕ Tambah Tugas
         </button>
       </div>
 
-      <ul>
+      {/* Task List */}
+      <ul className="space-y-3">
         <AnimatePresence>
           {filteredTasks.map((task) => {
             const timeLeft = calculateTimeRemaining(task.deadline);
             const isExpired = timeLeft === 'Waktu habis!';
             const taskColor = task.completed
-              ? 'bg-green-200'
+              ? 'bg-green-100'
               : isExpired
-              ? 'bg-red-200'
-              : 'bg-yellow-200';
+              ? 'bg-red-100'
+              : 'bg-yellow-100';
 
             return (
               <motion.li
@@ -181,35 +185,35 @@ export default function TodoList() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className={`flex flex-col justify-between p-2 border-b rounded-lg ${taskColor}`}
+                className={`p-3 rounded-lg shadow-sm ${taskColor}`}
               >
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center mb-1">
                   <span
                     onClick={() => toggleTask(task.id)}
-                    className={`cursor-pointer transition-500 ${
+                    className={`cursor-pointer ${
                       task.completed
                         ? 'line-through text-gray-500'
-                        : 'font-semibold text-gray-700'
+                        : 'font-medium text-gray-800'
                     }`}
                   >
                     {task.text}
                   </span>
-                  <div className="flex items-center">
+                  <div className="flex gap-2">
                     <button
                       onClick={() => editTask(task)}
-                      className="text-white p-1 rounded bg-blue-500 hover:bg-blue-700 mr-2"
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 text-sm rounded"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => deleteTask(task.id)}
-                      className="text-white p-1 rounded bg-red-600 hover:bg-red-800"
+                      className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 text-sm rounded"
                     >
                       Hapus
                     </button>
                   </div>
                 </div>
-                <p className="text-sm text-gray-700">
+                <p className="text-xs text-gray-600">
                   Deadline: {new Date(task.deadline).toLocaleString()}
                 </p>
                 <p className="text-xs font-semibold text-gray-700">
