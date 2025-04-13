@@ -140,7 +140,7 @@ export default function TodoList() {
   );
 
   return (
-    <div className="max-w-xl mx-auto mt-12 px-6 py-8 bg-gradient-to-br from-white to-emerald-50 rounded-2xl shadow-2xl">
+    <div className="max-w-xl mx-auto mt-12 px-6 py-8 bg-white rounded-2xl shadow-2xl">
       <h1 className="text-4xl font-bold text-center text-emerald-600 mb-6">
         📝 To-Do List
       </h1>
@@ -159,7 +159,7 @@ export default function TodoList() {
       <div className="flex justify-center mb-8">
         <button
           onClick={addTask}
-          className="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition-transform hover:scale-105"
+          className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition-transform hover:scale-105"
         >
           ➕ Tambah Tugas
         </button>
@@ -171,14 +171,13 @@ export default function TodoList() {
             const timeLeft = calculateTimeRemaining(task.deadline);
             const isExpired = timeLeft === 'Waktu habis!';
 
-            // Warna latar dinamis
             let taskColor = '';
             if (isExpired) {
-              taskColor = 'border-red-300 bg-red-50';
+              taskColor = 'border-red-300 bg-red-100';
             } else if (task.completed) {
-              taskColor = 'border-green-300 bg-green-50';
+              taskColor = 'border-gray-300 bg-gray-100';
             } else {
-              taskColor = 'border-yellow-300 bg-yellow-50';
+              taskColor = 'border-blue-300 bg-blue-50';
             }
 
             return (
@@ -210,13 +209,13 @@ export default function TodoList() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => editTask(task)}
-                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
+                      className="bg-sky-600 hover:bg-sky-700 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => deleteTask(task.id)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
+                      className="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
                     >
                       Hapus
                     </button>
