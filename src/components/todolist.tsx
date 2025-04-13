@@ -140,92 +140,94 @@ export default function TodoList() {
   );
 
   return (
-    <div className="max-w-xl mx-auto mt-12 px-6 py-8 bg-white rounded-2xl shadow-2xl">
-      <h1 className="text-4xl font-bold text-center text-emerald-600 mb-6">
-        📝 To-Do List
-      </h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-emerald-50 py-10 px-4">
+      <div className="max-w-xl mx-auto px-6 py-8 bg-white rounded-2xl shadow-2xl">
+        <h1 className="text-4xl font-bold text-center text-emerald-600 mb-6">
+          📝 To-Do List
+        </h1>
 
-      <div className="mb-4 relative">
-        <input
-          type="text"
-          placeholder="🔍 Cari tugas..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full p-3 pl-10 rounded-lg bg-gray-100 text-gray-700 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400"
-        />
-        <div className="absolute top-3 left-3 text-gray-500">🔍</div>
-      </div>
+        <div className="mb-4 relative">
+          <input
+            type="text"
+            placeholder="🔍 Cari tugas..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full p-3 pl-10 rounded-lg bg-gray-100 text-gray-700 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+          />
+          <div className="absolute top-3 left-3 text-gray-500">🔍</div>
+        </div>
 
-      <div className="flex justify-center mb-8">
-        <button
-          onClick={addTask}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition-transform hover:scale-105"
-        >
-          ➕ Tambah Tugas
-        </button>
-      </div>
+        <div className="flex justify-center mb-8">
+          <button
+            onClick={addTask}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition-transform hover:scale-105"
+          >
+            ➕ Tambah Tugas
+          </button>
+        </div>
 
-      <ul className="space-y-4">
-        <AnimatePresence>
-          {filteredTasks.map((task) => {
-            const timeLeft = calculateTimeRemaining(task.deadline);
-            const isExpired = timeLeft === 'Waktu habis!';
+        <ul className="space-y-4">
+          <AnimatePresence>
+            {filteredTasks.map((task) => {
+              const timeLeft = calculateTimeRemaining(task.deadline);
+              const isExpired = timeLeft === 'Waktu habis!';
 
-            let taskColor = '';
-            if (isExpired) {
-              taskColor = 'border-red-300 bg-red-100';
-            } else if (task.completed) {
-              taskColor = 'border-gray-300 bg-gray-100';
-            } else {
-              taskColor = 'border-blue-300 bg-blue-50';
-            }
+              let taskColor = '';
+              if (isExpired) {
+                taskColor = 'border-red-300 bg-red-100';
+              } else if (task.completed) {
+                taskColor = 'border-gray-300 bg-gray-100';
+              } else {
+                taskColor = 'border-blue-300 bg-blue-50';
+              }
 
-            return (
-              <motion.li
-                key={task.id}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                className={`p-4 rounded-xl border-l-4 ${taskColor} shadow-sm`}
-              >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h3
-                      onClick={() => toggleTask(task.id)}
-                      className={`text-lg font-semibold cursor-pointer ${
-                        task.completed ? 'line-through text-gray-500' : 'text-gray-800'
-                      }`}
-                    >
-                      {task.completed ? '✔️' : isExpired ? '❌' : '⚠️'} {task.text}
-                    </h3>
-                    <p className="text-sm text-gray-500">
-                      Deadline: {new Date(task.deadline).toLocaleString()}
-                    </p>
-                    <p className="text-sm font-semibold text-emerald-700 mt-1">
-                      ⏳ {timeRemaining[task.id] || 'Menghitung...'}
-                    </p>
+              return (
+                <motion.li
+                  key={task.id}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className={`p-4 rounded-xl border-l-4 ${taskColor} shadow-sm`}
+                >
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3
+                        onClick={() => toggleTask(task.id)}
+                        className={`text-lg font-semibold cursor-pointer ${
+                          task.completed ? 'line-through text-gray-500' : 'text-gray-800'
+                        }`}
+                      >
+                        {task.completed ? '✔️' : isExpired ? '❌' : '⚠️'} {task.text}
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        Deadline: {new Date(task.deadline).toLocaleString()}
+                      </p>
+                      <p className="text-sm font-semibold text-emerald-700 mt-1">
+                        ⏳ {timeRemaining[task.id] || 'Menghitung...'}
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => editTask(task)}
+                        className="bg-sky-600 hover:bg-sky-700 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deleteTask(task.id)}
+                        className="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
+                      >
+                        Hapus
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => editTask(task)}
-                      className="bg-sky-600 hover:bg-sky-700 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => deleteTask(task.id)}
-                      className="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
-                    >
-                      Hapus
-                    </button>
-                  </div>
-                </div>
-              </motion.li>
-            );
-          })}
-        </AnimatePresence>
-      </ul>
+                </motion.li>
+              );
+            })}
+          </AnimatePresence>
+        </ul>
+      </div>
     </div>
   );
 }
