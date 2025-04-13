@@ -21,9 +21,8 @@ type Task = {
 
 export default function TodoList() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [timeRemaining, setTimeRemaining] = useState<{ [key: string]: string }>(
-    {}
-  );
+  const [timeRemaining, setTimeRemaining] = useState<{ [key: string]: string }>({});
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -136,9 +135,25 @@ export default function TodoList() {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
+  const filteredTasks = tasks.filter((task) =>
+    task.text.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="max-w-md mx-auto mt-10 p-4 bg-white shadow-md rounded-lg">
       <h1 className="text-2xl text-emerald-500 font-bold mb-4">To-Do List</h1>
+
+      {/* Search Input */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Cari tugas..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full p-2 border rounded-md"
+        />
+      </div>
+
       <div className="flex justify-center mb-4">
         <button
           onClick={addTask}
@@ -147,9 +162,10 @@ export default function TodoList() {
           Tambah Tugas
         </button>
       </div>
+
       <ul>
         <AnimatePresence>
-          {tasks.map((task) => {
+          {filteredTasks.map((task) => {
             const timeLeft = calculateTimeRemaining(task.deadline);
             const isExpired = timeLeft === 'Waktu habis!';
             const taskColor = task.completed
