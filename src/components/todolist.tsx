@@ -140,10 +140,10 @@ export default function TodoList() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-emerald-50 py-10 px-4">
-      <div className="max-w-xl mx-auto px-6 py-8 bg-white rounded-2xl shadow-2xl">
-        <h1 className="text-4xl font-bold text-center text-emerald-600 mb-6">
-          📝 To-Do List
+    <div className="min-h-screen bg-gradient-to-br from-black via-purple-900 to-red-900 py-10 px-4 text-white">
+      <div className="max-w-xl mx-auto px-6 py-8 bg-gray-900 rounded-2xl shadow-2xl border border-red-800">
+        <h1 className="text-4xl font-bold text-center text-red-500 mb-6 drop-shadow-lg">
+          ☠️ Daftar Tugas Maut ☠️
         </h1>
 
         <div className="mb-4 relative">
@@ -152,15 +152,15 @@ export default function TodoList() {
             placeholder="🔍 Cari tugas..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-3 pl-10 rounded-lg bg-gray-100 text-gray-700 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+            className="w-full p-3 pl-10 rounded-lg bg-gray-800 text-gray-200 placeholder-gray-400 border border-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
           />
-          <div className="absolute top-3 left-3 text-gray-500">🔍</div>
+          <div className="absolute top-3 left-3 text-red-400">🔍</div>
         </div>
 
         <div className="flex justify-center mb-8">
           <button
             onClick={addTask}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition-transform hover:scale-105"
+            className="bg-red-700 hover:bg-red-800 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition-transform hover:scale-105"
           >
             ➕ Tambah Tugas
           </button>
@@ -174,11 +174,11 @@ export default function TodoList() {
 
               let taskColor = '';
               if (isExpired) {
-                taskColor = 'border-red-300 bg-red-100';
+                taskColor = 'border-red-800 bg-red-950';
               } else if (task.completed) {
-                taskColor = 'border-gray-300 bg-gray-100';
+                taskColor = 'border-gray-700 bg-gray-800';
               } else {
-                taskColor = 'border-blue-300 bg-blue-50';
+                taskColor = 'border-purple-800 bg-purple-900';
               }
 
               return (
@@ -188,35 +188,35 @@ export default function TodoList() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.3 }}
-                  className={`p-4 rounded-xl border-l-4 ${taskColor} shadow-sm`}
+                  className={`p-4 rounded-xl border-l-4 ${taskColor} shadow-md text-white`}
                 >
                   <div className="flex justify-between items-center">
                     <div>
                       <h3
                         onClick={() => toggleTask(task.id)}
                         className={`text-lg font-semibold cursor-pointer ${
-                          task.completed ? 'line-through text-gray-500' : 'text-gray-800'
+                          task.completed ? 'line-through text-gray-400' : 'text-white'
                         }`}
                       >
                         {task.completed ? '✔️' : isExpired ? '❌' : '⚠️'} {task.text}
                       </h3>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-red-300">
                         Deadline: {new Date(task.deadline).toLocaleString()}
                       </p>
-                      <p className="text-sm font-semibold text-emerald-700 mt-1">
+                      <p className="text-sm font-semibold text-rose-500 mt-1">
                         ⏳ {timeRemaining[task.id] || 'Menghitung...'}
                       </p>
                     </div>
                     <div className="flex gap-2">
                       <button
                         onClick={() => editTask(task)}
-                        className="bg-sky-600 hover:bg-sky-700 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
+                        className="bg-purple-700 hover:bg-purple-800 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => deleteTask(task.id)}
-                        className="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
+                        className="bg-rose-800 hover:bg-rose-900 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
                       >
                         Hapus
                       </button>
