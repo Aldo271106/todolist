@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Swal from 'sweetalert2';
 import {
@@ -23,6 +23,7 @@ export default function TodoList() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [timeRemaining, setTimeRemaining] = useState<{ [key: string]: string }>({});
   const [searchQuery, setSearchQuery] = useState('');
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -47,6 +48,21 @@ export default function TodoList() {
 
     return () => clearInterval(interval);
   }, [tasks]);
+
+  useEffect(() => {
+    searchInputRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSearchQuery('');
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const calculateTimeRemaining = (deadline: string): string => {
     const deadlineTime = new Date(deadline).getTime();
@@ -148,13 +164,26 @@ export default function TodoList() {
 
         <div className="mb-4 relative">
           <input
+            ref={searchInputRef}
             type="text"
             placeholder="🔍 Cari tugas..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-3 pl-10 rounded-lg bg-gray-800 text-gray-200 placeholder-gray-400 border border-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+            className="w-full p-3 pl-10 pr-10 rounded-lg bg-gray-800 text-gray-200 placeholder-gray-400 border border-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
           />
           <div className="absolute top-3 left-3 text-red-400">🔍</div>
+          {searchQuery && (
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                searchInputRef.current?.focus();
+              }}
+              className="absolute top-3 right-3 text-gray-400 hover:text-red-400"
+              aria-label="Clear search"
+            >
+              ❌
+            </button>
+          )}
         </div>
 
         <div className="flex justify-center mb-8">
