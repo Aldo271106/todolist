@@ -19,8 +19,6 @@ type Task = {
   deadline: string;
 };
 
-const ghostUrl = 'https://upload.wikimedia.org/wikipedia/commons/3/37/Emoji_u1f47b.svg';
-
 export default function TodoList() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [timeRemaining, setTimeRemaining] = useState<{ [key: string]: string }>({});
@@ -142,32 +140,10 @@ export default function TodoList() {
   );
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 py-10 px-4 text-white overflow-hidden">
-      {/* 👻 Hantu lewat */}
-      <img
-        src={ghostUrl}
-        alt="Ghost"
-        className="fixed top-20 left-[-100px] w-24 opacity-20 animate-ghost pointer-events-none z-0"
-      />
-
-      {/* 💡 Custom style for ghost animation */}
-      <style jsx global>{`
-        @keyframes ghost {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(150vw);
-          }
-        }
-        .animate-ghost {
-          animation: ghost 25s linear infinite;
-        }
-      `}</style>
-
-      <div className="relative max-w-xl mx-auto px-6 py-8 bg-gray-900/80 rounded-2xl shadow-2xl z-10 backdrop-blur-md">
-        <h1 className="text-4xl font-bold text-center text-rose-400 mb-6 drop-shadow-md">
-          🧟‍♂️ To-Do List Hantu
+    <div className="min-h-screen bg-gradient-to-br from-black via-purple-900 to-red-900 py-10 px-4 text-white">
+      <div className="max-w-xl mx-auto px-6 py-8 bg-gray-900 rounded-2xl shadow-2xl border border-red-800">
+        <h1 className="text-4xl font-bold text-center text-red-500 mb-6 drop-shadow-lg">
+          ☠️ Daftar Tugas Maut ☠️
         </h1>
 
         <div className="mb-4 relative">
@@ -176,15 +152,15 @@ export default function TodoList() {
             placeholder="🔍 Cari tugas..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-3 pl-10 rounded-lg bg-gray-800 text-white placeholder-gray-400 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-rose-500"
+            className="w-full p-3 pl-10 rounded-lg bg-gray-800 text-gray-200 placeholder-gray-400 border border-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
           />
-          <div className="absolute top-3 left-3 text-gray-500">🔍</div>
+          <div className="absolute top-3 left-3 text-red-400">🔍</div>
         </div>
 
         <div className="flex justify-center mb-8">
           <button
             onClick={addTask}
-            className="bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition-transform hover:scale-105"
+            className="bg-red-700 hover:bg-red-800 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition-transform hover:scale-105"
           >
             ➕ Tambah Tugas
           </button>
@@ -198,11 +174,11 @@ export default function TodoList() {
 
               let taskColor = '';
               if (isExpired) {
-                taskColor = 'border-red-400 bg-red-900/30';
+                taskColor = 'border-red-800 bg-red-950';
               } else if (task.completed) {
-                taskColor = 'border-gray-600 bg-gray-800/30';
+                taskColor = 'border-gray-700 bg-gray-800';
               } else {
-                taskColor = 'border-rose-500 bg-rose-900/20';
+                taskColor = 'border-purple-800 bg-purple-900';
               }
 
               return (
@@ -212,35 +188,35 @@ export default function TodoList() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.3 }}
-                  className={`p-4 rounded-xl border-l-4 ${taskColor} shadow-sm`}
+                  className={`p-4 rounded-xl border-l-4 ${taskColor} shadow-md text-white`}
                 >
                   <div className="flex justify-between items-center">
                     <div>
                       <h3
                         onClick={() => toggleTask(task.id)}
                         className={`text-lg font-semibold cursor-pointer ${
-                          task.completed ? 'line-through text-gray-500' : 'text-white'
+                          task.completed ? 'line-through text-gray-400' : 'text-white'
                         }`}
                       >
-                        {task.completed ? '✔️' : isExpired ? '💀' : '👻'} {task.text}
+                        {task.completed ? '✔️' : isExpired ? '❌' : '⚠️'} {task.text}
                       </h3>
-                      <p className="text-sm text-gray-400">
+                      <p className="text-sm text-red-300">
                         Deadline: {new Date(task.deadline).toLocaleString()}
                       </p>
-                      <p className="text-sm font-semibold text-rose-300 mt-1">
+                      <p className="text-sm font-semibold text-rose-500 mt-1">
                         ⏳ {timeRemaining[task.id] || 'Menghitung...'}
                       </p>
                     </div>
                     <div className="flex gap-2">
                       <button
                         onClick={() => editTask(task)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
+                        className="bg-purple-700 hover:bg-purple-800 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => deleteTask(task.id)}
-                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
+                        className="bg-rose-800 hover:bg-rose-900 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
                       >
                         Hapus
                       </button>
