@@ -23,6 +23,7 @@ export default function TodoList() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [timeRemaining, setTimeRemaining] = useState<{ [key: string]: string }>({});
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'incomplete'>('all');
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -63,6 +64,38 @@ export default function TodoList() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  useEffect(() => {
+    if (Notification.permission !== 'granted') {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      tasks.forEach((task) => {
+        const deadline = new Date(task.deadline).getTime();
+        const diff = deadline - now;
+
+        if (
+          diff > 0 &&
+          diff < 5 * 60 * 1000 &&
+          !task.completed &&
+          !localStorage.getItem(`notified-${task.id}`) &&
+          Notification.permission === 'granted'
+        ) {
+          new Notification('⏰ Deadline Hampir Tiba!', {
+            body: `Tugas "${task.text}" akan habis dalam kurang dari 5 menit!`,
+            icon: '/favicon.ico',
+          });
+          localStorage.setItem(`notified-${task.id}`, 'true');
+        }
+      });
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [tasks]);
 
   const calculateTimeRemaining = (deadline: string): string => {
     const deadlineTime = new Date(deadline).getTime();
@@ -151,9 +184,12 @@ export default function TodoList() {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
-  const filteredTasks = tasks.filter((task) =>
-    task.text.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTasks = tasks.filter((task) => {
+    const matchesSearch = task.text.toLowerCase().includes(searchQuery.toLowerCase());
+    if (filterStatus === 'completed') return matchesSearch && task.completed;
+    if (filterStatus === 'incomplete') return matchesSearch && !task.completed;
+    return matchesSearch;
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-purple-900 to-red-900 py-10 px-4 text-white">
@@ -186,13 +222,23 @@ export default function TodoList() {
           )}
         </div>
 
-        <div className="flex justify-center mb-8">
+        <div className="mb-6 flex justify-between items-center">
           <button
             onClick={addTask}
             className="bg-red-700 hover:bg-red-800 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition-transform hover:scale-105"
           >
             ➕ Tambah Tugas
           </button>
+
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value as 'all' | 'completed' | 'incomplete')}
+            className="bg-gray-800 border border-red-700 text-gray-200 px-4 py-2 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-red-500"
+          >
+            <option value="all">📋 Semua</option>
+            <option value="completed">✅ Selesai</option>
+            <option value="incomplete">⏳ Belum Selesai</option>
+          </select>
         </div>
 
         <ul className="space-y-4">
@@ -223,9 +269,7 @@ export default function TodoList() {
                     <div>
                       <h3
                         onClick={() => toggleTask(task.id)}
-                        className={`text-lg font-semibold cursor-pointer ${
-                          task.completed ? 'line-through text-gray-400' : 'text-white'
-                        }`}
+                        className={`text-lg font-semibold cursor-pointer ${task.completed ? 'line-through text-gray-400' : 'text-white'}`}
                       >
                         {task.completed ? '✔️' : isExpired ? '❌' : '⚠️'} {task.text}
                       </h3>
