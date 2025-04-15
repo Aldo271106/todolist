@@ -23,7 +23,6 @@ export default function TodoList() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [timeRemaining, setTimeRemaining] = useState<{ [key: string]: string }>({});
   const [searchQuery, setSearchQuery] = useState('');
-  const [filter, setFilter] = useState<'all' | 'done' | 'undone' | 'expired'>('all');
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -183,24 +182,9 @@ export default function TodoList() {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
-  const filteredTasks = tasks.filter((task) => {
-    const lowerText = task.text.toLowerCase();
-    const matchSearch = lowerText.includes(searchQuery.toLowerCase());
-    const isExpired = calculateTimeRemaining(task.deadline) === 'Waktu habis!';
-
-    if (!matchSearch) return false;
-
-    switch (filter) {
-      case 'done':
-        return task.completed;
-      case 'undone':
-        return !task.completed && !isExpired;
-      case 'expired':
-        return !task.completed && isExpired;
-      default:
-        return true;
-    }
-  });
+  const searchedTasks = tasks.filter((task) =>
+    task.text.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-purple-900 to-red-900 py-10 px-4 text-white">
@@ -233,13 +217,6 @@ export default function TodoList() {
           )}
         </div>
 
-        <div className="flex justify-center gap-2 mb-4">
-          <button onClick={() => setFilter('all')} className={`px-3 py-1 rounded-full text-sm ${filter === 'all' ? 'bg-red-700' : 'bg-gray-700'}`}>Semua</button>
-          <button onClick={() => setFilter('undone')} className={`px-3 py-1 rounded-full text-sm ${filter === 'undone' ? 'bg-red-700' : 'bg-gray-700'}`}>Belum Selesai</button>
-          <button onClick={() => setFilter('done')} className={`px-3 py-1 rounded-full text-sm ${filter === 'done' ? 'bg-red-700' : 'bg-gray-700'}`}>Selesai</button>
-          <button onClick={() => setFilter('expired')} className={`px-3 py-1 rounded-full text-sm ${filter === 'expired' ? 'bg-red-700' : 'bg-gray-700'}`}>Waktu Habis</button>
-        </div>
-
         <div className="flex justify-center mb-8">
           <button
             onClick={addTask}
@@ -251,7 +228,7 @@ export default function TodoList() {
 
         <ul className="space-y-4">
           <AnimatePresence>
-            {filteredTasks.map((task) => {
+            {searchedTasks.map((task) => {
               const timeLeft = calculateTimeRemaining(task.deadline);
               const isExpired = timeLeft === 'Waktu habis!';
 
