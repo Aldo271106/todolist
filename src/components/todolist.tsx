@@ -45,7 +45,6 @@ export default function TodoList() {
       });
       setTimeRemaining(newTimeRemaining);
     }, 1000);
-
     return () => clearInterval(interval);
   }, [tasks]);
 
@@ -91,7 +90,6 @@ export default function TodoList() {
         }
       });
     }, 10000);
-
     return () => clearInterval(interval);
   }, [tasks]);
 
@@ -99,13 +97,10 @@ export default function TodoList() {
     const deadlineTime = new Date(deadline).getTime();
     const now = new Date().getTime();
     const difference = deadlineTime - now;
-
     if (difference <= 0) return 'Waktu habis!';
-
     const hours = Math.floor(difference / (1000 * 60 * 60));
     const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
     return `${hours}j ${minutes}m ${seconds}d`;
   };
 
@@ -188,11 +183,25 @@ export default function TodoList() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-purple-900 to-red-900 py-10 px-4 text-white">
-      <div className="max-w-xl mx-auto px-6 py-8 bg-gray-900 rounded-2xl shadow-2xl border border-red-800">
-        <h1 className="text-4xl font-bold text-center text-red-500 mb-6 drop-shadow-lg">
-          ☠️ Daftar Tugas Maut ☠️
-        </h1>
+      <h1 className="text-4xl font-bold text-center text-red-500 mb-10 drop-shadow-lg">
+        ☠️ Daftar Tugas Maut ☠️
+      </h1>
 
+      {/* Card: Tambah Tugas */}
+      <div className="max-w-xl mx-auto px-6 py-6 mb-6 bg-gray-900 rounded-2xl shadow-xl border border-red-700">
+        <h2 className="text-xl font-semibold text-center mb-4 text-white">Tambah Tugas Baru</h2>
+        <div className="flex justify-center">
+          <button
+            onClick={addTask}
+            className="bg-red-700 hover:bg-red-800 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition-transform hover:scale-105"
+          >
+            ➕ Tambah Tugas
+          </button>
+        </div>
+      </div>
+
+      {/* Card: Daftar Tugas */}
+      <div className="max-w-xl mx-auto px-6 py-6 bg-gray-900 rounded-2xl shadow-xl border border-red-800">
         <div className="mb-4 relative">
           <input
             ref={searchInputRef}
@@ -215,15 +224,6 @@ export default function TodoList() {
               ❌
             </button>
           )}
-        </div>
-
-        <div className="flex justify-center mb-8">
-          <button
-            onClick={addTask}
-            className="bg-red-700 hover:bg-red-800 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition-transform hover:scale-105"
-          >
-            ➕ Tambah Tugas
-          </button>
         </div>
 
         <ul className="space-y-4">
@@ -254,7 +254,9 @@ export default function TodoList() {
                     <div>
                       <h3
                         onClick={() => toggleTask(task.id)}
-                        className={`text-lg font-semibold cursor-pointer ${task.completed ? 'line-through text-gray-400' : 'text-white'}`}
+                        className={`text-lg font-semibold cursor-pointer ${
+                          task.completed ? 'line-through text-gray-400' : 'text-white'
+                        }`}
                       >
                         {task.completed ? '✔️' : isExpired ? '❌' : '⚠️'} {task.text}
                       </h3>
