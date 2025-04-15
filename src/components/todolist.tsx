@@ -84,7 +84,7 @@ export default function TodoList() {
     const now = new Date().getTime();
     const difference = deadlineTime - now;
 
-    if (difference <= 0) return 'Waktu habis!';
+    if (difference <= 0) return '🪦 Waktu habis!';
     const hours = Math.floor(difference / (1000 * 60 * 60));
     const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((difference % (1000 * 60)) / 1000);
@@ -93,7 +93,7 @@ export default function TodoList() {
 
   const addTask = async () => {
     const { value: formValues } = await Swal.fire({
-      title: 'Tambahkan tugas baru',
+      title: 'Tambahkan tugas menyeramkan',
       html:
         '<input id="swal-input1" class="swal2-input" placeholder="Nama tugas">' +
         '<input id="swal-input2" type="datetime-local" class="swal2-input">',
@@ -120,7 +120,7 @@ export default function TodoList() {
 
   const editTask = async (task: Task) => {
     const { value: formValues } = await Swal.fire({
-      title: 'Edit tugas',
+      title: 'Edit tugas berhantu',
       html:
         `<input id="swal-input1" class="swal2-input" value="${task.text}" placeholder="Nama tugas">` +
         `<input id="swal-input2" type="datetime-local" class="swal2-input" value="${new Date(task.deadline).toISOString().slice(0, 16)}">`,
@@ -166,11 +166,11 @@ export default function TodoList() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-purple-900 to-red-900 py-10 px-4 text-white">
       <div className="max-w-3xl mx-auto space-y-6">
-        <div className="bg-gray-900 p-6 rounded-2xl shadow-2xl border border-red-800 text-center">
-          <h1 className="text-4xl font-bold text-red-500 mb-2">☠️ Daftar Semua Tugas ☠️</h1>
+        <div className="bg-[#1a1a1a] p-6 rounded-2xl shadow-[0_0_20px_red] text-center">
+          <h1 className="text-4xl font-bold text-red-600 mb-2 animate-pulse">☠️ To Do List ☠️</h1>
         </div>
 
-        <div className="bg-gray-900 p-4 rounded-xl shadow-xl border border-purple-800">
+        <div className="bg-[#1a1a1a] p-4 rounded-xl shadow-[0_0_10px_purple]">
           <input
             ref={searchInputRef}
             type="text"
@@ -181,12 +181,12 @@ export default function TodoList() {
           />
         </div>
 
-        <div className="bg-gray-900 p-4 rounded-xl shadow-xl border border-purple-800 text-center">
+        <div className="bg-[#1a1a1a] p-4 rounded-xl shadow-[0_0_10px_purple] text-center">
           <button
             onClick={addTask}
             className="bg-red-700 hover:bg-red-800 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition-transform hover:scale-105"
           >
-            ➕ Tambah Tugas
+            ➕ Tambah tugas
           </button>
         </div>
 
@@ -199,13 +199,13 @@ export default function TodoList() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className={`p-4 rounded-xl border-l-4 ${
+                className={`p-4 rounded-xl border-l-4 backdrop-blur-md bg-opacity-80 shadow-xl transition-all duration-300 ${
                   task.completed
                     ? 'border-gray-700 bg-gray-800'
-                    : calculateTimeRemaining(task.deadline) === 'Waktu habis!'
+                    : calculateTimeRemaining(task.deadline).includes('habis')
                     ? 'border-red-800 bg-red-950'
                     : 'border-purple-800 bg-purple-900'
-                } shadow-md`}
+                }`}
               >
                 <div className="flex justify-between items-center">
                   <div>
@@ -215,14 +215,13 @@ export default function TodoList() {
                         task.completed ? 'line-through text-gray-400' : 'text-white'
                       }`}
                     >
-                      {task.completed ? '✔️' : calculateTimeRemaining(task.deadline) === 'Waktu habis!' ? '❌' : '⚠️'}{' '}
-                      {task.text}
+                      {task.completed ? '✅' : calculateTimeRemaining(task.deadline).includes('habis') ? '💀' : '⚠️'} {task.text}
                     </h3>
                     <p className="text-sm text-red-300">
                       Deadline: {new Date(task.deadline).toLocaleString()}
                     </p>
                     <p className="text-sm font-semibold text-rose-500 mt-1">
-                      ⏳ {timeRemaining[task.id] || 'Menghitung...'}
+                      ⏳ {timeRemaining[task.id] || 'Menghitung tugas'}
                     </p>
                   </div>
                   <div className="flex gap-2">
@@ -236,7 +235,7 @@ export default function TodoList() {
                       onClick={() => deleteTask(task.id)}
                       className="bg-rose-800 hover:bg-rose-900 text-white px-3 py-1 rounded-lg text-sm shadow-sm"
                     >
-                      Hapus
+                      hapus
                     </button>
                   </div>
                 </div>
