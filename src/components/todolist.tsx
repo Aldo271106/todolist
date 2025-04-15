@@ -23,7 +23,7 @@ export default function TodoList() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [timeRemaining, setTimeRemaining] = useState<{ [key: string]: string }>({});
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'incomplete'>('all');
+  const [filter, setFilter] = useState<'all' | 'done' | 'undone' | 'expired'>('all');
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -77,7 +77,6 @@ export default function TodoList() {
       tasks.forEach((task) => {
         const deadline = new Date(task.deadline).getTime();
         const diff = deadline - now;
-
         if (
           diff > 0 &&
           diff < 5 * 60 * 1000 &&
@@ -185,10 +184,22 @@ export default function TodoList() {
   };
 
   const filteredTasks = tasks.filter((task) => {
-    const matchesSearch = task.text.toLowerCase().includes(searchQuery.toLowerCase());
-    if (filterStatus === 'completed') return matchesSearch && task.completed;
-    if (filterStatus === 'incomplete') return matchesSearch && !task.completed;
-    return matchesSearch;
+    const lowerText = task.text.toLowerCase();
+    const matchSearch = lowerText.includes(searchQuery.toLowerCase());
+    const isExpired = calculateTimeRemaining(task.deadline) === 'Waktu habis!';
+
+    if (!matchSearch) return false;
+
+    switch (filter) {
+      case 'done':
+        return task.completed;
+      case 'undone':
+        return !task.completed && !isExpired;
+      case 'expired':
+        return !task.completed && isExpired;
+      default:
+        return true;
+    }
   });
 
   return (
@@ -222,23 +233,20 @@ export default function TodoList() {
           )}
         </div>
 
-        <div className="mb-6 flex justify-between items-center">
+        <div className="flex justify-center gap-2 mb-4">
+          <button onClick={() => setFilter('all')} className={`px-3 py-1 rounded-full text-sm ${filter === 'all' ? 'bg-red-700' : 'bg-gray-700'}`}>Semua</button>
+          <button onClick={() => setFilter('undone')} className={`px-3 py-1 rounded-full text-sm ${filter === 'undone' ? 'bg-red-700' : 'bg-gray-700'}`}>Belum Selesai</button>
+          <button onClick={() => setFilter('done')} className={`px-3 py-1 rounded-full text-sm ${filter === 'done' ? 'bg-red-700' : 'bg-gray-700'}`}>Selesai</button>
+          <button onClick={() => setFilter('expired')} className={`px-3 py-1 rounded-full text-sm ${filter === 'expired' ? 'bg-red-700' : 'bg-gray-700'}`}>Waktu Habis</button>
+        </div>
+
+        <div className="flex justify-center mb-8">
           <button
             onClick={addTask}
             className="bg-red-700 hover:bg-red-800 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition-transform hover:scale-105"
           >
             ➕ Tambah Tugas
           </button>
-
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value as 'all' | 'completed' | 'incomplete')}
-            className="bg-gray-800 border border-red-700 text-gray-200 px-4 py-2 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-red-500"
-          >
-            <option value="all">📋 Semua</option>
-            <option value="completed">✅ Selesai</option>
-            <option value="incomplete">⏳ Belum Selesai</option>
-          </select>
         </div>
 
         <ul className="space-y-4">
