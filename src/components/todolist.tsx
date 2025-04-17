@@ -93,7 +93,7 @@ export default function TodoList() {
 
   const addTask = async () => {
     const { value: formValues } = await Swal.fire({
-      title: 'Tambahkan tugas menyeramkan',
+      title: 'Tambahkan tugas',
       html:
         '<input id="swal-input1" class="swal2-input" placeholder="Nama tugas">' +
         '<input id="swal-input2" type="datetime-local" class="swal2-input">',
@@ -167,7 +167,7 @@ export default function TodoList() {
     <div className="min-h-screen bg-gradient-to-br from-black via-purple-900 to-red-900 py-10 px-4 text-white">
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="bg-[#1a1a1a] p-6 rounded-2xl shadow-[0_0_20px_red] text-center">
-          <h1 className="text-4xl font-bold text-red-600 mb-2 animate-pulse">☠️ To Do List ☠️</h1>
+          <h1 className="text-4xl font-bold text-red-600 mb-2 animate-pulse">To Do List </h1>
         </div>
 
         <div className="bg-[#1a1a1a] p-4 rounded-xl shadow-[0_0_10px_purple]">
