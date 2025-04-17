@@ -12,6 +12,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../app/lib/firebase';
 
+// ✅ Type untuk data tugas
 type Task = {
   id: string;
   text: string;
@@ -20,11 +21,13 @@ type Task = {
 };
 
 export default function TodoList() {
+  // ✅ State utama
   const [tasks, setTasks] = useState<Task[]>([]);
   const [timeRemaining, setTimeRemaining] = useState<{ [key: string]: string }>({});
   const [searchQuery, setSearchQuery] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);
 
+  // ✅ Ambil semua tugas dari Firebase saat pertama kali load
   useEffect(() => {
     const fetchTasks = async () => {
       const querySnapshot = await getDocs(collection(db, 'tasks'));
@@ -37,6 +40,7 @@ export default function TodoList() {
     fetchTasks();
   }, []);
 
+  // ✅ Update hitungan mundur setiap detik
   useEffect(() => {
     const interval = setInterval(() => {
       const newTimeRemaining: { [key: string]: string } = {};
@@ -48,12 +52,14 @@ export default function TodoList() {
     return () => clearInterval(interval);
   }, [tasks]);
 
+  // ✅ Minta izin notifikasi
   useEffect(() => {
     if (Notification.permission !== 'granted') {
       Notification.requestPermission();
     }
   }, []);
 
+  // ✅ Kirim notifikasi jika deadline tinggal 5 menit
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date().getTime();
@@ -79,6 +85,7 @@ export default function TodoList() {
     return () => clearInterval(interval);
   }, [tasks]);
 
+  // ✅ Hitung sisa waktu dari deadline
   const calculateTimeRemaining = (deadline: string): string => {
     const deadlineTime = new Date(deadline).getTime();
     const now = new Date().getTime();
@@ -91,6 +98,7 @@ export default function TodoList() {
     return `${hours}j ${minutes}m ${seconds}d`;
   };
 
+  // ✅ Tambah tugas baru lewat modal SweetAlert
   const addTask = async () => {
     const { value: formValues } = await Swal.fire({
       title: 'Tambahkan tugas',
@@ -118,9 +126,10 @@ export default function TodoList() {
     }
   };
 
+  // ✅ Edit tugas yang sudah ada
   const editTask = async (task: Task) => {
     const { value: formValues } = await Swal.fire({
-      title: 'Edit tugas berhantu',
+      title: 'Edit tugas',
       html:
         `<input id="swal-input1" class="swal2-input" value="${task.text}" placeholder="Nama tugas">` +
         `<input id="swal-input2" type="datetime-local" class="swal2-input" value="${new Date(task.deadline).toISOString().slice(0, 16)}">`,
@@ -144,6 +153,7 @@ export default function TodoList() {
     }
   };
 
+  // ✅ Toggle selesai / belum
   const toggleTask = async (id: string) => {
     const updatedTasks = tasks.map((task) =>
       task.id === id ? { ...task, completed: !task.completed } : task
@@ -154,11 +164,13 @@ export default function TodoList() {
     });
   };
 
+  // ✅ Hapus tugas
   const deleteTask = async (id: string) => {
     await deleteDoc(doc(db, 'tasks', id));
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
+  // ✅ Filter berdasarkan pencarian
   const filteredTasks = tasks.filter((task) =>
     task.text.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -166,10 +178,13 @@ export default function TodoList() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-purple-900 to-red-900 py-10 px-4 text-white">
       <div className="max-w-3xl mx-auto space-y-6">
+
+        {/* ✅ Judul Aplikasi */}
         <div className="bg-[#1a1a1a] p-6 rounded-2xl shadow-[0_0_20px_red] text-center">
           <h1 className="text-4xl font-bold text-red-600 mb-2 animate-pulse">To Do List </h1>
         </div>
 
+        {/* ✅ Input pencarian */}
         <div className="bg-[#1a1a1a] p-4 rounded-xl shadow-[0_0_10px_purple]">
           <input
             ref={searchInputRef}
@@ -181,6 +196,7 @@ export default function TodoList() {
           />
         </div>
 
+        {/* ✅ Tombol tambah tugas */}
         <div className="bg-[#1a1a1a] p-4 rounded-xl shadow-[0_0_10px_purple] text-center">
           <button
             onClick={addTask}
@@ -190,6 +206,7 @@ export default function TodoList() {
           </button>
         </div>
 
+        {/* ✅ Daftar tugas dengan animasi dan status */}
         <ul className="space-y-4">
           <AnimatePresence>
             {filteredTasks.map((task) => (
@@ -209,6 +226,7 @@ export default function TodoList() {
               >
                 <div className="flex justify-between items-center">
                   <div>
+                    {/* ✅ Nama tugas & status */}
                     <h3
                       onClick={() => toggleTask(task.id)}
                       className={`text-lg font-semibold cursor-pointer ${
@@ -224,6 +242,8 @@ export default function TodoList() {
                       ⏳ {timeRemaining[task.id] || 'Menghitung tugas'}
                     </p>
                   </div>
+
+                  {/* ✅ Tombol edit dan hapus */}
                   <div className="flex gap-2">
                     <button
                       onClick={() => editTask(task)}
