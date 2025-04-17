@@ -123,6 +123,12 @@ export default function TodoList() {
       };
       const docRef = await addDoc(collection(db, 'tasks'), newTask);
       setTasks([...tasks, { id: docRef.id, ...newTask }]);
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Nama tugas dan deadline harus terisi!',
+      });
     }
   };
 
@@ -150,6 +156,12 @@ export default function TodoList() {
         deadline: updatedTask.deadline,
       });
       setTasks(tasks.map((t) => (t.id === task.id ? updatedTask : t)));
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Nama tugas dan deadline harus terisi!',
+      });
     }
   };
 
